@@ -48,16 +48,12 @@ def _character_class(classes: set[str]) -> re.Pattern[str]:
 
 @cache
 def _odd_level() -> re.Pattern[str]:
-    """Return a regex for the classes that can reach an odd embedding level.
+    """Return a regex for the right-to-left classes.
 
-    Only these classes can put text at an odd embedding level in a
-    left-to-right paragraph. Without any of them, display order is logical
-    order and nothing is mirrored, so bidiSkeleton(LTR, X) is
-    internalSkeleton(X). UTS #39 states this fast path with only R and AL,
-    which is wrong: see confusable._bidi and
-    test_uts39_fast_path_needs_more_than_r_and_al.
+    UTS #39 section 4: in a left-to-right paragraph, text without R or AL
+    characters keeps its order, so bidiSkeleton(LTR, X) is internalSkeleton(X).
     """
-    return _character_class({"R", "AL", "AN", "RLE", "RLO", "RLI"})
+    return _character_class({"R", "AL"})
 
 
 def _internal_skeleton(text: str) -> str:

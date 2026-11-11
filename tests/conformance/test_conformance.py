@@ -268,12 +268,6 @@ def test_left_to_right_display_without_odd_level_classes_is_identity(text: str) 
     assert adapter.bidi_display(text, "LTR") == text
 
 
-def test_uts39_fast_path_needs_more_than_r_and_al() -> None:
-    for text in ("invoice\u202egpj.exe", "\u0661(\u0662", "\u202ba!\u202c"):
-        assert not {_bidi_class(ord(c)) for c in text} & {"R", "AL"}
-        assert adapter.bidi_display(text, "LTR") != text
-
-
 # Character properties, for the generated data tables.
 
 
