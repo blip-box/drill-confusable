@@ -24,7 +24,6 @@ def tags(ascii_text: str) -> str:
 
 
 ENGLAND = "\U0001f3f4" + tags("gbeng") + "\U000e007f"  # an RGI subdivision flag
-TEXAS = "\U0001f3f4" + tags("ustx") + "\U000e007f"  # well formed, but not RGI
 FAMILY = "\U0001f468\u200d\U0001f469\u200d\U0001f467"
 SINHALA = "\u0dc1\u0dca\u200d\u0dbb\u0dd3"  # UTS #39 section 3.1.1.1
 PERSIAN = "\u0646\u0627\u0645\u0647\u200c\u0627\u06cc"
@@ -57,13 +56,12 @@ PERSIAN = "\u0646\u0627\u0645\u0647\u200c\u0627\u06cc"
         (PERSIAN, []),
         (FAMILY, []),
         ("\U0001f600\u200da", [(1, JOIN)]),  # an emoji, then a letter
-        # Tags: only the RGI emoji tag sequences are visible.
+        # Tags: the emoji tag sequences are visible.
         (ENGLAND, []),
         (
             "ok" + tags("ignore all previous instructions")[:6],
             [(i, TAG) for i in range(2, 8)],
         ),
-        (TEXAS, [(i, TAG) for i in range(1, 6)]),
         ("\U000e007f", [(0, TAG)]),  # a lone CANCEL TAG
         (ENGLAND + tags("x"), [(7, TAG)]),
         # Variation selectors: only in a variation sequence, and one at a time.

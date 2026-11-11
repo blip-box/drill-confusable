@@ -3,7 +3,7 @@
 A character is reported if it renders as nothing (Default_Ignorable_Code_Point)
 or is a C0 or C1 control (General_Category Cc), unless its context gives it a
 visible job: ZWJ and ZWNJ in the contexts of UTS #39 section 3.1.1.1 or ZWJ
-inside an emoji sequence, Tag characters inside an RGI emoji tag sequence (the
+inside an emoji sequence, Tag characters inside an emoji tag sequence (the
 subdivision flags), and a variation selector that completes a variation
 sequence.
 
@@ -107,11 +107,8 @@ def _grapheme_breaks() -> Runs:
     return Runs(GRAPHEME_CLUSTER_BREAK_RUNS)
 
 
-@cache
-def _rgi_tag_sequences() -> frozenset[str]:
-    from confusable._data.emoji import RGI_EMOJI_TAG_SEQUENCES
-
-    return RGI_EMOJI_TAG_SEQUENCES
+# An emoji tag sequence: a black flag, tag characters, CANCEL TAG (UTS #51).
+_TAG_SEQUENCE = re.compile("\U0001f3f4[\U000e0020-\U000e007e]+\U000e007f")
 
 
 def _joins_emoji(text: str, i: int) -> bool:
@@ -149,13 +146,10 @@ def _completes_variation_sequence(text: str, i: int) -> bool:
 
 
 def _tag_sequences(text: str) -> set[int]:
-    """Return the positions of the Tag characters in RGI emoji tag sequences."""
+    """Return the positions of the Tag characters in emoji tag sequences."""
     tagged: set[int] = set()
-    for sequence in _rgi_tag_sequences():
-        start = text.find(sequence)
-        while start != -1:
-            tagged.update(range(start + 1, start + len(sequence)))
-            start = text.find(sequence, start + len(sequence))
+    for match in _TAG_SEQUENCE.finditer(text):
+        tagged.update(range(match.start() + 1, match.end()))
     return tagged
 
 
@@ -193,7 +187,7 @@ def find_invisible(text: str) -> list[tuple[int, Invisible]]:
     character that renders as nothing (Default_Ignorable_Code_Point), such as
     ZERO WIDTH SPACE, SOFT HYPHEN and HANGUL FILLER. Not reported where they
     have a visible job: ZWJ and ZWNJ in the contexts of UTS #39 section
-    3.1.1.1 or ZWJ joining two emoji, Tag characters in an RGI emoji tag
+    3.1.1.1 or ZWJ joining two emoji, Tag characters in an emoji tag
     sequence such as the flag of England, and a variation selector that
     completes a variation sequence. A run of variation selectors after one
     base, which can hide data too, is reported from the second selector on.
